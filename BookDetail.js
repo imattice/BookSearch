@@ -11,7 +11,7 @@ import {
 class BookDetail extends Component {
   render() {
     var book = this.props.book
-    var imageURI = (typeof book.volumeInfo.imageLinks !== 'undefined') ? book.volumeInfo.thumbnail: ''
+    var imageURI = (typeof book.volumeInfo.imageLinks !== 'undefined') ? book.volumeInfo.imageLinks.thumbnail : ''
     var description = (typeof book.volumeInfo.description !== 'undefined') ? book.volumeInfo.description: ''
 
     return (
