@@ -11,6 +11,8 @@ import {
   ActivityIndicator,
 } from 'react-native';
 
+var BookDetail = require('./BookDetail')
+
 var REQUEST_URL = 'https://www.googleapis.com/books/v1/volumes?q=subject:fiction'
 
 class BookList extends Component {
@@ -33,6 +35,7 @@ class BookList extends Component {
     fetch(REQUEST_URL)
     .then((response) => response.json())
     .then((responseData) => {
+      //console.log(responseData.items)
       this.setState({
         dataSource: this.state.dataSource.cloneWithRows(responseData.items),
         isLoading: false,
@@ -41,14 +44,24 @@ class BookList extends Component {
     .done()
   }
 
+  showBookDetail(book) {
+    this.props.navigator.push({
+      title: book.volumeInfo.title,
+      component: BookDetail,
+      passProps: {book}
+    })
+  }
+
   renderBook(book) {
     return (
-      <TouchableHighlight>
+      <TouchableHighlight onPress={() => this.showBookDetail(book)} underlayColor='#dddddd'>
         <View>
           <View style={styles.container}>
             <Image
-              source={{uri: book.volumeInfo.imageLinks.thumbnail}}
-              style={styles.thumbnail} />
+              style={styles.thumbnail}
+              source={{uri: book.volumeInfo.imageLinks.smallThumbnail}}
+              onError={(e) => console.log("images still not loading")}
+            />
             <View style={styles.rightContainer}>
               <Text style={styles.title}>{book.volumeInfo.title}</Text>
               <Text style={styles.author}>{book.volumeInfo.authors}</Text>
@@ -98,8 +111,8 @@ var styles = StyleSheet.create({
     padding: 10,
   },
   thumbnail: {
-    width: 53,
     height: 81,
+    width: 53,
     marginRight: 10,
   },
   rightContainer: {
@@ -118,6 +131,7 @@ var styles = StyleSheet.create({
   },
   listView: {
     marginTop: 55,
+    marginBottom: 55,
     backgroundColor: '#F5FCFF',
   },
   loading: {
